@@ -59,6 +59,8 @@
     <MakeDir Directories="$(ModsPath)/$(TargetName)" />
     <!-- <Copy SourceFiles="$(TargetDir)/AsyncIO.dll" DestinationFolder="$(ModsPath)/$(TargetName)" /> -->
     <Copy SourceFiles="$(TargetDir)/websocket-sharp.dll" DestinationFolder="$(ModsPath)/$(TargetName)" />
+    <Copy SourceFiles="$(TargetDir)/MessagePack.dll" DestinationFolder="$(ModsPath)/$(TargetName)" />
+    <Copy SourceFiles="$(TargetDir)/MessagePack.Annotations.dll" DestinationFolder="$(ModsPath)/$(TargetName)" />
     <Copy SourceFiles="$(TargetPath);$(TargetDir)/$(TargetName).pdb" DestinationFolder="$(ModsPath)/$(TargetName)" />
     <!-- Uncomment this if you have the game installed on Steam, Steam is in your PATH environment variable, and you want to run the game upon build. -->
     <!-- Exec Command="steam steam://rungameid/367520" / -->
@@ -340,6 +342,7 @@
     <None Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MessagePack" Version="2.5.108" />
     <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
   </ItemGroup>
 </Project>

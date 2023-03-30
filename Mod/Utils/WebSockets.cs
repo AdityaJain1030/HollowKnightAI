@@ -1,4 +1,6 @@
 using WebSocketSharp;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace HollowKnightAI.Utils
 {
@@ -7,13 +9,13 @@ namespace HollowKnightAI.Utils
 	/// </summary>
 	public class Socket : WebSocket
 	{
-		public byte[] LastMessage { get; private set; }
+		public Queue<byte[]> UnreadMessages { get; private set; } = new Queue<byte[]>();
 		public byte[] LastMessageSent { get; private set; }
 		public Socket(string url, params string[] protocols) : base(url, protocols)
 		{
 			this.OnMessage += (sender, e) =>
 			{
-				LastMessage = e.RawData;
+				UnreadMessages.Enqueue(e.RawData);
 			};
 		}
 
@@ -39,12 +41,26 @@ namespace HollowKnightAI.Utils
 			LastMessageSent = System.Text.Encoding.UTF8.GetBytes(data);
 		}
 
-		// public new void SendAndRecieve(byte[] data, System.Action<byte[]> completed)
-		// {
-		// 	base.SendAsync(data, (success) =>
-		// 	{
-		// 		completed(LastMessage);
-		// 	});
-		// }
+		public class WaitForMessage : CustomYieldInstruction
+		{
+			private Socket socket;
+			private bool wait = true;
+
+			public WaitForMessage(Socket socket)
+			{
+				this.socket = socket;
+				this.socket.OnMessage += (sender, e) =>
+				{
+					wait = false;
+				};
+			}
+			public override bool keepWaiting
+			{
+				get
+				{
+					return wait;
+				}
+			}
+		}
 	}
 }

@@ -202,6 +202,30 @@ namespace HollowKnightAI.Utils
 			return this;
 		}
 
+		///<summary>
+		/// Stacks the Image on top of another Image with a given multiplier. The image being stacked will be  multiplied by the multiplier before being stacked.
+		///</summary>
+		///<param name="image">The Image to stack on top of this Image</param>
+		///<param name="multiplier">The multiplier to apply to the Image being stacked</param>
+
+		public Image AddImage(Image image, byte multiplier)
+		{
+			if (image.width != width || image.height != height)
+			{
+				throw new ArgumentException("Image dimensions must match");
+			}
+
+			for (int i = 0; i < width; i++)
+			{
+				for (int j = 0; j < height; j++)
+				{
+					this[i, j] = (byte)Math.Min(255, this[i, j] + image[i, j] * multiplier);
+				}
+			}
+
+			return this;
+		}
+
 		// public Image LayerImage(Image image, )
 
 		///<summary>

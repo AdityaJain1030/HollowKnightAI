@@ -14,18 +14,26 @@ connected = set()
 # The main behavior function for this server
 async def echo(websocket, path):
     print("New connection")
-    while True:
-        data = await websocket.recv()
-        data = np.frombuffer(data, dtype=np.uint8)
-        data = data.reshape(1280, 720)
-        data = np.rot90(data)
-        # np.flip(data)
-        # np.flip(data, axis=0)
-        data = np.expand_dims(data, axis=2)
-        # np.flip(data)
-        # im = cv2.imread
-        cv2.imshow("test", data)
-        cv2.waitKey(1)
+    await asyncio.sleep(0.5)
+    await websocket.recv()
+    print("Connection established")
+    await websocket.send("Hello")
+    print("Sent")
+    # for i in range(10):
+    #     await websocket.send("Hello")
+    #     data = await websocket.recv()
+    #     print(data)
+        
+        # data = np.frombuffer(data, dtype=np.uint8)
+        # data = data.reshape(1280, 720)
+        # data = np.rot90(data)
+        # # np.flip(data)
+        # # np.flip(data, axis=0)
+        # data = np.expand_dims(data, axis=2)
+        # # np.flip(data)
+        # # im = cv2.imread
+        # cv2.imshow("test", data)
+        # cv2.waitKey(1)
 
 
 
