@@ -45,19 +45,27 @@ namespace HollowKnightAI
 
 			bool start = false;
 
+			On.BossSceneController.Awake += (orig, a) => Log("BossSceneController.Awake");
+			// On.BossChallengeUI.Awake += (orig, a) => Log();
+
 			ModHooks.HeroUpdateHook += () =>
 			{
 				if (Input.GetKeyDown(KeyCode.F1))
 				{
-					socket = new("ws://localhost:8080");
-					hitboxReader.Load();
-					socket.Connect();
-                    GameManager.instance.StartCoroutine(Setup());
+					// StartTP();
+					// var statues = GameObject.FindObjectsOfType<BossStatue>();
+					// foreach (var statue in statues)
+					{
+						// statue.gameObject.SetActive(false);
+						// Log(statue.dreamReturnGate.name);
+					}
+					testing = new();
+					GameManager.instance.StartCoroutine(testing.Setup());
 				}
-                if (Input.GetKeyDown(KeyCode.F2))
-                {
-                 Log(socket.UnreadMessages.Count);
-                }
+				if (Input.GetKeyDown(KeyCode.F2))
+				{
+					Log(socket.UnreadMessages.Count);
+				}
 
 				if (start)
 				{
@@ -106,56 +114,39 @@ namespace HollowKnightAI
 			};
 
 		}
-		public IEnumerator Setup()
-		{
-            Log("Setting up");
-            socket.Send(new byte[] { 0 });
-			yield return new WaitForMessage(socket, Log);
-			var message = socket.UnreadMessages.Dequeue();
-            Log("Got message");
-            Log(System.Text.Encoding.Default.GetString(message));
-			if (System.Text.Encoding.Default.GetString(message) == "Hello"){
-                Log("Loading boss scene");
-				Game.SceneHooks.LoadBossScene("GG_Hornet_1");
-                Log("Loaded boss scene");
-            }
-			yield return Loop();
-		}
 
-		public IEnumerator Loop()
+		public void StartTP()
 		{
-			while (true)
-			{
-				yield return new WaitForMessage(socket, Log);
-                Log("Got message");
-				var message = socket.UnreadMessages.Dequeue();
-				socket.Send(message);
-			}
-			// Game.SceneHooks.LoadBossScene("GG_Workshop");
-		}
+			var HC = HeroController.instance;
+            var GM = GameManager.instance;
 
-        public class WaitForMessage : CustomYieldInstruction
-		{
-			private Socket socket;
-			private bool wait = true;
-            private Action<string> Log;
+			PlayMakerFSM.BroadcastEvent("DREAM ENTER");
+			PlayerData.instance.dreamReturnScene = "GG_Workshop";
+			PlayerData.instance.bossReturnEntryGate = "door_dreamReturnGG_GG_Statue_Hornet";
+			PlayMakerFSM.BroadcastEvent("BOX DOWN DREAM");
+            PlayMakerFSM.BroadcastEvent("CONVO CANCEL");
+			PlayMakerFSM.BroadcastEvent("GG TRANSITION OUT");
+			BossSceneController.SetupEvent = (self) => {
+                StaticVariableList.SetValue("bossSceneToLoad", "GG_Hornet_1");
+                self.BossLevel = 1;
+                self.DreamReturnEvent = "DREAM RETURN";
+                self.OnBossSceneComplete += () => self.DoDreamReturn();
+            };
+			HC.ClearMPSendEvents();
+            GM.TimePasses();
+            GM.ResetSemiPersistentItems();
+            HC.enterWithoutInput = true;
+            HC.AcceptInput();
 
-			public WaitForMessage(Socket socket, Action<string> log)
-			{
-				this.socket = socket;
-                Log = log;
-				this.socket.OnMessage += (sender, e) =>
-				{
-					wait = false;
-				};
-			}
-			public override bool keepWaiting
-			{
-				get
-				{
-					return wait;
-				}
-			}
+			GM.BeginSceneTransition(new GameManager.SceneLoadInfo
+            {
+                SceneName = "GG_Hornet_1",
+                EntryGateName = "door_dreamEnter",
+                EntryDelay = 0,
+                Visualization = GameManager.SceneLoadVisualizations.GodsAndGlory,
+                PreventCameraFadeOut = true
+            });
+
 		}
 	}
 }

@@ -1,23 +1,27 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-// namespace HollowKnightAI.Environments
-// {
-// 	abstract class Environment<SetupArgs>
-// 	{
-// 		public abstract IEnumerator Setup(SetupArgs args);
-// 		public abstract void Update();
-// 		public abstract void Cleanup();
+namespace HollowKnightAI.Environments
+{
+	abstract class Environment
+	{
+	
+		public abstract IEnumerator Setup();
 
-// 		private IEnumerator Init(SetupArgs args)
-// 		{
-			
-// 			GameManager.instance.StartCoroutine(UpdateCoroutine());
-// 		}
+		public abstract IEnumerator Loop();
 
-// 		public void Start(SetupArgs args) {
-// 			GameManager.instance.StartCoroutine(Setup(args));
-// 		}
-// 	}
-// }
+		public abstract IEnumerator Cleanup();
+
+		public abstract IEnumerator Reset();
+
+		public abstract void DoAction();
+
+		public abstract void GetObservation();
+
+		public abstract void GetReward();
+
+		public abstract void GetDone();
+
+	}
+}

@@ -20,16 +20,22 @@ namespace HollowKnightAI.Environments
 		{
 			yield return new Utils.Socket.WaitForMessage(socket);
 			var message = socket.UnreadMessages.Dequeue();
-			if (message[0] == (byte)0)
-				Game.SceneHooks.LoadBossScene("GG_Hornet_1");
-			GameManager.instance.StartCoroutine(Loop());
+			string data = System.Text.Encoding.UTF8.GetString(message);
+			HollowKnightAI.Instance.Log(data);
+			if (data == "Hello"){
+				yield return Game.SceneHooks.LoadBossScene("GG_Hornet_1");
+
+			}
+			yield return Loop();
 		}
 
 		public IEnumerator Loop() {
-			while(true) {
+			while (true) {
 				yield return new Utils.Socket.WaitForMessage(socket);
 				var message = socket.UnreadMessages.Dequeue();
-				socket.Send(message);
+				string data = System.Text.Encoding.UTF8.GetString(message);
+				if (data == "Hello")
+					yield return Game.SceneHooks.LoadBossScene("GG_Hornet_1");
 			}
 			// Game.SceneHooks.LoadBossScene("GG_Workshop");
 		}

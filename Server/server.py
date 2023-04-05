@@ -14,15 +14,14 @@ connected = set()
 # The main behavior function for this server
 async def echo(websocket, path):
     print("New connection")
-    await asyncio.sleep(0.5)
-    await websocket.recv()
-    print("Connection established")
-    await websocket.send("Hello")
-    print("Sent")
-    # for i in range(10):
-    #     await websocket.send("Hello")
-    #     data = await websocket.recv()
-    #     print(data)
+
+    while True:
+        # if key is pressed run
+        if input("Press enter to send") == "tp":
+            await websocket.send("Hello")
+            await asyncio.sleep(0.5)
+            print("Sent")
+
         
         # data = np.frombuffer(data, dtype=np.uint8)
         # data = data.reshape(1280, 720)

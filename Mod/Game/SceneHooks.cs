@@ -5,15 +5,32 @@ namespace HollowKnightAI.Game
 {
 	public static class SceneHooks
 	{
+        public static void StopAllTransitions() {
+
+        }
+        /// <summary>
+        ///  Loads a boss from the Hall of gods given the scene name
+        /// </summary>
+        /// <param name="scene_name">The name of the scene to load</param>
 		public static IEnumerator LoadBossScene(string scene_name)
         {
             var HC = HeroController.instance;
             var GM = GameManager.instance;
 
+            // On.BossSceneController.Start += (orig, self) => orig(self);
+
             //Copy paste of the FSM that loads a boss from HoG
+            PlayMakerFSM.BroadcastEvent("DREAM ENTER");
             PlayerData.instance.dreamReturnScene = "GG_Workshop";
             PlayMakerFSM.BroadcastEvent("BOX DOWN DREAM");
             PlayMakerFSM.BroadcastEvent("CONVO CANCEL");
+            PlayMakerFSM.BroadcastEvent("GG TRANSITION OUT");
+            BossSceneController.SetupEvent = (self) => {
+                StaticVariableList.SetValue("bossSceneToLoad", scene_name);
+                self.BossLevel = 1;
+                self.DreamReturnEvent = "DREAM RETURN";
+                self.OnBossSceneComplete += () => self.DoDreamReturn();
+            };
 
             HC.ClearMPSendEvents();
             GM.TimePasses();
@@ -32,6 +49,7 @@ namespace HollowKnightAI.Game
             yield return FixSoul();
 			yield return new WaitForSeconds(2f);
         }
+        // quick soul hotfix 
 		private static IEnumerator FixSoul()
         {
             yield return new WaitForFinishedEnteringScene();
