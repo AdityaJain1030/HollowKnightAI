@@ -58,7 +58,7 @@ namespace HollowKnightAI.Utils
 			{
 				get
 				{
-					return wait;
+					return socket.UnreadMessages.Count == 0;
 				}
 			}
 		}

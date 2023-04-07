@@ -6,14 +6,14 @@ namespace HollowKnightAI.Game
 	   public class InputDeviceShim : InputDevice
     {
 		// private bool[] Movement = new bool[4] {false, false, false, false};
-		private bool Up = false;
-		private bool Down = false;
-		private bool Left = false;
-		private bool Right = false;
-		private bool Jump = false;
-		private bool Attack = false;
-		private bool Dash = false;
-		private bool Cast = false;
+		public bool Up = false;
+		public bool Down = false;
+		public bool Left = false;
+		public bool Right = false;
+		public bool Jump = false;
+		public bool Attack = false;
+		public bool Dash = false;
+		public bool Cast = false;
 
 
 		// public bool[] Actions = [false, false, false, false, false];
@@ -29,9 +29,7 @@ namespace HollowKnightAI.Game
 			AddControl(InputControlType.Action2, "Cast"); // Hold for heal
 			AddControl(InputControlType.Action3, "Attack");
 			AddControl(InputControlType.Action4, "DreamNail");
-			AddControl(InputControlType.Action4, "DreamNail");
 			AddControl(InputControlType.RightTrigger, "Dash");
-
 			AddControl(InputControlType.LeftTrigger, "SuperDash");
 			AddControl(InputControlType.RightBumper, "QuickCast");
         }
@@ -44,7 +42,7 @@ namespace HollowKnightAI.Game
 			UpdateWithState(InputControlType.DPadRight, Right, updateTick, deltaTime);
 			UpdateWithState(InputControlType.Action1, Jump, updateTick, deltaTime);
 
-			UpdateWithState(InputControlType.Action2, Cast, updateTick, deltaTime);
+			UpdateWithState(InputControlType.RightBumper, Cast, updateTick, deltaTime);
 			UpdateWithState(InputControlType.Action3, Attack, updateTick, deltaTime);
 			UpdateWithValue(InputControlType.RightTrigger, Dash ? 1 : 0, updateTick, deltaTime);
 

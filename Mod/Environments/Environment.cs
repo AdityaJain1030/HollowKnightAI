@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HollowKnightAI.Environments
 {
-	abstract class Environment
+	public abstract class Environment
 	{
 	
 		public abstract IEnumerator Setup();
@@ -22,6 +22,18 @@ namespace HollowKnightAI.Environments
 		public abstract void GetReward();
 
 		public abstract void GetDone();
+
+		private IEnumerator _runtime() {
+			yield return Setup();
+			while (true) {
+				yield return Loop();
+			}
+		}
+
+		public void Start() {
+			GameManager.instance.StartCoroutine(Setup());
+
+		}
 
 	}
 }
